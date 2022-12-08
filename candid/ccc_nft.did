@@ -1,0 +1,244 @@
+type TransferResponse = 
+ variant {
+   err:
+    variant {
+      ListOnMarketPlace;
+      NotAllowTransferToSelf;
+      NotOwnerOrNotApprove;
+      Other;
+    };
+   ok: TokenIndex;
+ };
+type TokenIndex__2 = nat;
+type TokenIndex = nat;
+type TokenDetails = 
+ record {
+   accessory: ComponentAttribute;
+   background: ComponentAttribute;
+   body: ComponentAttribute;
+   dna: text;
+   eyes: ComponentAttribute;
+   hair: ComponentAttribute;
+   id: nat;
+   mouth: ComponentAttribute;
+   rarityScore: float64;
+   top: ComponentAttribute;
+ };
+type Time = int;
+type SoldListings = 
+ record {
+   account: nat;
+   lastPrice: nat;
+   time: Time;
+ };
+type PreMint = 
+ record {
+   index: nat;
+   user: principal;
+ };
+type NFTStoreInfo__1 = 
+ record {
+   canisterId: principal;
+   index: TokenIndex;
+ };
+type NFTMetaData = 
+ record {
+   accessory: nat;
+   background: nat;
+   body: nat;
+   dna: text;
+   eyes: nat;
+   hair: nat;
+   id: nat;
+   mouth: nat;
+   top: nat;
+ };
+type Listings__1 = 
+ record {
+   price: nat;
+   seller: principal;
+   time: Time;
+   tokenIndex: TokenIndex;
+ };
+type Listings = 
+ record {
+   price: nat;
+   seller: principal;
+   time: Time;
+   tokenIndex: TokenIndex;
+ };
+type ListResponse = 
+ variant {
+   err:
+    variant {
+      AlreadyList;
+      NotApprove;
+      NotFoundIndex;
+      NotNFT;
+      NotOwner;
+      Other;
+      SamePrice;
+    };
+   ok: TokenIndex;
+ };
+type ListRequest = 
+ record {
+   price: nat;
+   tokenIndex: TokenIndex;
+ };
+type GetTokenResponse = 
+ variant {
+   err: variant {NotFoundIndex;};
+   ok: TokenDetails;
+ };
+type GetSoldListingsRes = 
+ record {
+   listings: SoldListings;
+   rarityScore: float64;
+ };
+type GetListingsRes = 
+ record {
+   listings: Listings__1;
+   rarityScore: float64;
+ };
+type ComponentAttribute = 
+ record {
+   name: text;
+   rarity: float64;
+ };
+type Component = 
+ record {
+   attribute: ComponentAttribute;
+   id: nat;
+ };
+type CanvasIdentity = 
+ record {
+   canisterId: principal;
+   index: TokenIndex;
+ };
+type BuyResponse = 
+ variant {
+   err:
+    variant {
+      AllowedInsufficientBalance;
+      AlreadyTransferToOther;
+      InsufficientBalance;
+      LessThanFee;
+      NotAllowBuySelf;
+      NotFoundIndex;
+      Other;
+      Unauthorized;
+    };
+   ok: TokenIndex;
+ };
+type BuyRequest = 
+ record {
+   feeTo: principal;
+   marketFeeRatio: nat;
+   price: nat;
+   tokenIndex: TokenIndex;
+ };
+type AirDropStruct = 
+ record {
+   remainTimes: nat;
+   user: principal;
+ };
+type AirDropResponse = 
+ variant {
+   err: variant {
+          AlreadyCliam;
+          NotInAirDropListOrAlreadyCliam;
+        };
+   ok: CanvasIdentity;
+ };
+service : {
+  approve: (principal, TokenIndex__2) -> (bool);
+  balanceOf: (principal) -> (nat) query;
+  batchTransferFrom: (principal, vec principal, vec TokenIndex__2) ->
+   (TransferResponse);
+  buyNow: (BuyRequest) -> (BuyResponse);
+  cancelFavorite: (TokenIndex__2) -> (bool);
+  cancelList: (TokenIndex__2) -> (ListResponse);
+  clearAirDrop: () -> (bool);
+  cliamAirdrop: () -> (AirDropResponse);
+  deleteAirDrop: (principal) -> (bool);
+  fixNftBalance: (principal) -> (bool);
+  getAirDropLeft: () -> (vec record {
+                               principal;
+                               nat;
+                             }) query;
+  getAirDropRemain: (principal) -> (nat) query;
+  getAll: () -> (vec record {
+                       TokenIndex__2;
+                       principal;
+                     }) query;
+  getAllNFT: (principal) -> (vec record {
+                                   TokenIndex__2;
+                                   principal;
+                                 }) query;
+  getAllNftCanister: () -> (vec principal);
+  getAllTokens: () -> (vec record {
+                             TokenIndex__2;
+                             NFTMetaData;
+                           });
+  getApproved: (TokenIndex__2) -> (opt principal) query;
+  getAvaiableNFT: (principal) ->
+   (vec record {
+          TokenIndex__2;
+          principal;
+        }) query;
+  getAvailableMint: () -> (vec record {
+                                 TokenIndex__2;
+                                 bool;
+                               }) query;
+  getCirculation: () -> (nat) query;
+  getComponentById: (TokenIndex__2) -> (opt Component) query;
+  getComponentsSize: () -> (nat) query;
+  getCycles: () -> (nat) query;
+  getListings: () -> (vec record {
+                            NFTStoreInfo__1;
+                            GetListingsRes;
+                          }) query;
+  getMaxMarketFeeRatio: () -> (nat) query;
+  getNftStoreCIDByIndex: (TokenIndex__2) -> (principal) query;
+  getOwnerSize: () -> (nat) query;
+  getRegistry: () -> (vec record {
+                            principal;
+                            vec NFTStoreInfo__1;
+                          }) query;
+  getRoyaltyFeeRatio: () -> (nat) query;
+  getRoyaltyFeeTo: () -> (principal) query;
+  getSoldListings: () ->
+   (vec record {
+          NFTStoreInfo__1;
+          GetSoldListingsRes;
+        }) query;
+  getStakeFeeTo: () -> (principal) query;
+  getStorageCanisterId: () -> (opt principal) query;
+  getTokenById: (nat) -> (GetTokenResponse) query;
+  getWICPCanisterId: () -> (principal) query;
+  isApprovedForAll: (principal, principal) -> (bool) query;
+  isList: (TokenIndex__2) -> (opt Listings) query;
+  list: (ListRequest) -> (ListResponse);
+  newStorageCanister: (principal) -> (bool);
+  ownerOf: (TokenIndex__2) -> (opt principal) query;
+  preMint: (vec PreMint) -> (nat);
+  proAvailableMint: () -> (bool);
+  setApprovalForAll: (principal, bool) -> (bool);
+  setController: (principal) -> (bool);
+  setFavorite: (TokenIndex__2) -> (bool);
+  setMaxMarketFeeRatio: (nat) -> (bool);
+  setNftCanister: (vec principal) -> (bool);
+  setOwner: (principal) -> (bool);
+  setRoyaltyFeeTo: (principal) -> (bool);
+  setRoyaltyRatio: (nat) -> (bool);
+  setStakeFeeTo: (principal) -> (bool);
+  setStorageCanisterId: (opt principal) -> (bool);
+  setWICPCanisterId: (principal) -> (bool);
+  transferFrom: (principal, principal, TokenIndex__2) -> (TransferResponse);
+  updateList: (ListRequest) -> (ListResponse);
+  uploadAirDropList: (vec AirDropStruct) -> (bool);
+  uploadComponents: (vec Component) -> (bool);
+  uploadNftMetaData: (vec NFTMetaData) -> (bool);
+  wallet_receive: () -> (nat);
+}
