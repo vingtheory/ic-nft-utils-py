@@ -7,14 +7,21 @@ from utils.fileio import FileIO
 
 # nft metadata, owners, listings, soldlistings
 class CCCNFTCanisterUtils:
-    def __init__(self, inputCollectionName, inputSrcNftCanisterId, inputtotalTokensSuppy):
+    def __init__(self, inputCollectionName, inputSrcNftCanisterId, inputtotalTokensSuppy, version):
         self.collectionName = inputCollectionName
         self.totalTokensSupply = inputtotalTokensSuppy
-        candid = open("candid/ccc_nft.did").read()
+        candid = self.getCandid(version)
         identity = Identity()
         client = Client()
         agent = Agent(identity, client)
         self.canister = Canister(agent=agent, canister_id=inputSrcNftCanisterId, candid=candid)
+
+    def getCandid(self, version):
+        switcher={
+            'v1': open("candid/ccc_nft_v1.did").read(),
+            'v2': open("candid/ccc_nft_v2.did").read(),
+        }
+        return switcher.get(version, '')
 
     def downloadAllTokensMetadata(self):
         print('Starting - downloadAllTokensMetadata...')
@@ -86,6 +93,12 @@ class CCCNFTCanisterUtils:
         soldListings = self.canister.getSoldListings()
         FileIO.writeToPickle('soldListings', soldListings[0])
         print('Successful - downloadAllSoldListings.')
+
+    def downloadImageReferenceData(self):
+        print('Starting - downloadImageReferenceData...')
+        allNftLinkInfo = self.canister.getAllNftLinkInfo()
+        FileIO.writeToPickle('allNftLinkInfo', allNftLinkInfo[0])
+        print('Successful - downloadImageReferenceData.')
 
     def uploadAllSoldListings(self):
         soldListings = FileIO.readFromPickle('soldListings')
