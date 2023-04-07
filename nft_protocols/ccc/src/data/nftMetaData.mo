@@ -19,7 +19,7 @@ shared(msg) actor class NFTMetaData(_owner: Principal) = this {
     type Image = Types.Image;
 
     private stable var owner : Principal = _owner;
-    private stable var supply : Nat  = 10000;  //accroding to your project
+    private stable var supply : Nat  = 10000;  //according to your project
     private stable var imageDatas: [var Types.Image] = Array.init<Types.Image>(10000, Blob.fromArray([]));
  
     private stable var dataUser : Principal = Principal.fromText("umgol-annoi-q7dqt-qbsw6-a2pww-eitzs-6vi5t-efaz6-xquey-5jmut-sqe");

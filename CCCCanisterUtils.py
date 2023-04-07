@@ -4,6 +4,8 @@ from ic.client import *
 from ic.candid import Types, encode
 from ic.canister import Canister
 from utils.fileio import FileIO
+import requests
+from pathlib import Path
 
 # nft metadata, owners, listings, soldlistings
 class CCCNFTCanisterUtils:
@@ -99,6 +101,19 @@ class CCCNFTCanisterUtils:
         allNftLinkInfo = self.canister.getAllNftLinkInfo()
         FileIO.writeToPickle('allNftLinkInfo', allNftLinkInfo[0])
         print('Successful - downloadImageReferenceData.')
+
+    def downloadAllImages(self):
+        print('Starting - downloadAllImages...')
+        allNftLinkInfo = self.canister.getAllNftLinkInfo()
+        tokenIndex = 0
+        Path("images").mkdir(parents=True, exist_ok=True)
+        while tokenIndex < len(allNftLinkInfo[0]):
+            imageIndex = allNftLinkInfo[0][tokenIndex][0]
+            json = allNftLinkInfo[0][tokenIndex][1]
+            imageUrl = f"https://gateway.filedrive.io/ipfs/{json['photoLink']}"
+            imageData = requests.get(imageUrl, allow_redirects=True)
+            open(f'images/{imageIndex}.png', 'wb').write(imageData.content)
+            tokenIndex = tokenIndex + 1
 
     def uploadAllSoldListings(self):
         soldListings = FileIO.readFromPickle('soldListings')

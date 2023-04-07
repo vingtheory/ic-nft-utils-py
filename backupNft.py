@@ -8,6 +8,7 @@ def performBackUp(
     totalTokensSupply):
     
     cccNFTCanisterUtils = CCCNFTCanisterUtils(collectionName, srcNftCanisterId, totalTokensSupply, nftCandidVersion)
+
     print('JOB STARTING.')
 
     print('(1/7) - Downloading owners and holdings of all tokens...')
@@ -15,14 +16,20 @@ def performBackUp(
     cccNFTCanisterUtils.downloadAllTokenAndOwnerMetadata_faster()
     # cccNFTCanisterUtils.uploadAllTokenAndOwnerMetadata_faster()
 
-    print('(2/7) - Downloading all tokens - metadata, traits, rarity...')
     # all tokens - metadata, traits, rarity
-    if(downloadMetadata == 1) : cccNFTCanisterUtils.downloadAllTokensMetadata()
+    if(downloadMetadata == 1) : 
+        print('(2/7) - Downloading all tokens - metadata, traits, rarity...')
+        cccNFTCanisterUtils.downloadAllTokensMetadata()
+    else : 
+        print('(2/7) - Skipped downloading all tokens - metadata, traits, rarity...')
     # cccNFTCanisterUtils.uploadAllTokensMetadata()
 
-    print('(3/7) - Downloading all component info - all trait and rarity...')
     # all component info - all trait and rarity 
-    if(downloadMetadata == 1) : cccNFTCanisterUtils.downloadAllComponentsInfo()
+    if(downloadMetadata == 1) : 
+        print('(3/7) - Downloading all component info - all trait and rarity...')
+        cccNFTCanisterUtils.downloadAllComponentsInfo()
+    else : 
+        print('(3/7) - Skipped downloading all component info - all trait and rarity...')
     # cccNFTCanisterUtils.uploadAllComponentsInfo()
 
     print('(4/7) - Downloading current listings...')
@@ -41,7 +48,9 @@ def performBackUp(
         cccNFTMetadataCanisterUtils.downloadAllImages()
         # cccNFTMetadataCanisterUtils.uploadAllImages()
     elif(srcMetadataCanisterId == 'ipfs') : 
+        print('(6/7) - Downloading all images...')
         cccNFTCanisterUtils.downloadImageReferenceData()
+        cccNFTCanisterUtils.downloadAllImages()
 
     cccStorageCanisterUtils = CCCNFTStorageCanisterUtils(collectionName, srcStorageCanisterId, totalTokensSupply)
     print('(7/7) - Downloading all transactions...')
